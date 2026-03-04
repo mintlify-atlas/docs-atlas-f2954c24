@@ -1,0 +1,55 @@
+{
+  "projectType": "general",
+  "projectName": "Mini Project",
+  "projectDescription": "A full-stack starter application with React frontend and Express backend demonstrating basic client-server communication.",
+  "theme": "almond",
+  "primaryColor": "#61dafb",
+  "lightColor": "#9ae6ff",
+  "darkColor": "#3da3c7",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get Started",
+        "pages": [
+          "introduction",
+          "quickstart"
+        ]
+      },
+      {
+        "group": "Frontend",
+        "pages": [
+          "frontend/setup",
+          "frontend/app-component",
+          "frontend/styling"
+        ]
+      },
+      {
+        "group": "Backend",
+        "pages": [
+          "backend/setup",
+          "backend/server",
+          "backend/api"
+        ]
+      },
+      {
+        "group": "Guides",
+        "pages": [
+          "guides/running-locally",
+          "guides/deployment",
+          "guides/troubleshooting"
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "React frontend with hooks",
+    "Express backend with CORS",
+    "Client-server communication",
+    "Development-ready setup"
+  ],
+  "publicApiSurface": [
+    "GET / - Returns server status message",
+    "App component - Main React component",
+    "PORT environment variable - Server port configuration"
+  ]
+}
