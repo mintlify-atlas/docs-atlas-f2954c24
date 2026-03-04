@@ -1,0 +1,376 @@
+---
+title: Deployment
+description: Deploy your full-stack application to production environments
+---
+
+This guide covers deploying both the frontend and backend components of your application to production.
+
+## Overview
+
+The application consists of two separate services that can be deployed independently:
+
+- **Frontend**: React application (static files)
+- **Backend**: Express API server (Node.js application)
+
+<Warning>
+  Before deploying, ensure you've tested the application thoroughly in your local environment.
+</Warning>
+
+## Building the React App for Production
+
+<Steps>
+  <Step title="Navigate to the client directory">
+    ```bash
+    cd client
+    ```
+  </Step>
+  
+  <Step title="Run the production build">
+    ```bash
+    npm run build
+    ```
+    
+    This creates an optimized production build in the `client/build/` directory.
+    
+    The build process:
+    - Minifies JavaScript and CSS
+    - Optimizes images and assets
+    - Generates source maps
+    - Creates static HTML, CSS, and JS files
+  </Step>
+  
+  <Step title="Verify the build">
+    Check that the `build` folder was created:
+    
+    ```bash
+    ls -la build/
+    ```
+    
+    You should see `index.html`, `static/` folder, and other assets.
+  </Step>
+</Steps>
+
+<Note>
+  The production build is optimized for performance and much smaller than the development version.
+</Note>
+
+## Serving the Built Files
+
+### Option 1: Using serve (for testing)
+
+Test the production build locally:
+
+```bash
+npm install -g serve
+serve -s build -p 3000
+```
+
+### Option 2: Using Express (integrated)
+
+Serve the React app from your Express server:
+
+```javascript server/index.js
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const app = express();
+
+app.use(cors());
+
+// API routes
+app.get('/api', (req, res) => {
+  res.send('🚀 Express backend is running!');
+});
+
+// Serve static files from React build
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+// Handle React routing, return all requests to React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+```
+
+## Environment Variables for Production
+
+### Backend Environment Variables
+
+Create a `.env` file in the `server` directory (not tracked in git):
+
+```bash .env
+PORT=5000
+NODE_ENV=production
+CORS_ORIGIN=https://your-frontend-domain.com
+```
+
+<Warning>
+  Never commit `.env` files to version control! Add `.env` to your `.gitignore` file.
+</Warning>
+
+### Frontend Environment Variables
+
+For React, create `.env.production` in the `client` directory:
+
+```bash .env.production
+REACT_APP_API_URL=https://your-backend-domain.com
+```
+
+Update `client/src/App.js` to use the environment variable:
+
+```javascript
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
+fetch(API_URL)
+  .then((res) => res.text())
+  .then((data) => setMessage(data))
+  .catch((err) => console.error(err));
+```
+
+## Deployment Platforms
+
+### Frontend Deployment
+
+<AccordionGroup>
+  <Accordion title="Vercel (Recommended for React)">
+    Vercel is optimized for React applications and offers zero-config deployment.
+    
+    **Steps:**
+    1. Install Vercel CLI: `npm install -g vercel`
+    2. Navigate to client directory: `cd client`
+    3. Run: `vercel`
+    4. Follow the prompts
+    
+    **Configuration** (`vercel.json`):
+    ```json
+    {
+      "buildCommand": "npm run build",
+      "outputDirectory": "build",
+      "devCommand": "npm start",
+      "env": {
+        "REACT_APP_API_URL": "https://your-backend-url.com"
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Netlify">
+    Netlify offers continuous deployment from Git repositories.
+    
+    **Steps:**
+    1. Create account at [netlify.com](https://netlify.com)
+    2. Connect your Git repository
+    3. Configure build settings:
+       - **Build command**: `npm run build`
+       - **Publish directory**: `build`
+       - **Base directory**: `client`
+    4. Add environment variables in Netlify dashboard
+    5. Deploy
+    
+    **Netlify redirects** (`client/public/_redirects`):
+    ```
+    /*    /index.html   200
+    ```
+  </Accordion>
+  
+  <Accordion title="GitHub Pages">
+    Free hosting for static sites directly from your repository.
+    
+    **Steps:**
+    1. Install gh-pages: `npm install --save-dev gh-pages`
+    2. Add to `client/package.json`:
+       ```json
+       "homepage": "https://yourusername.github.io/repo-name",
+       "scripts": {
+         "predeploy": "npm run build",
+         "deploy": "gh-pages -d build"
+       }
+       ```
+    3. Deploy: `npm run deploy`
+  </Accordion>
+</AccordionGroup>
+
+### Backend Deployment
+
+<AccordionGroup>
+  <Accordion title="Railway">
+    Modern platform with excellent Node.js support and free tier.
+    
+    **Steps:**
+    1. Create account at [railway.app](https://railway.app)
+    2. Create new project from GitHub repo
+    3. Railway auto-detects Node.js
+    4. Set environment variables in Railway dashboard
+    5. Deploy automatically on git push
+    
+    **Add to `server/package.json`**:
+    ```json
+    {
+      "scripts": {
+        "start": "node index.js"
+      },
+      "engines": {
+        "node": ">=14.0.0"
+      }
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Heroku">
+    Popular platform-as-a-service with robust deployment tools.
+    
+    **Steps:**
+    1. Install Heroku CLI
+    2. Login: `heroku login`
+    3. Create app: `heroku create your-app-name`
+    4. Push code: `git push heroku main`
+    
+    **Add `Procfile` in server directory**:
+    ```
+    web: node index.js
+    ```
+    
+    **Set environment variables**:
+    ```bash
+    heroku config:set NODE_ENV=production
+    ```
+  </Accordion>
+  
+  <Accordion title="Render">
+    Zero-config deployment with free tier for web services.
+    
+    **Steps:**
+    1. Create account at [render.com](https://render.com)
+    2. Create new Web Service
+    3. Connect GitHub repository
+    4. Configure:
+       - **Build Command**: `cd server && npm install`
+       - **Start Command**: `cd server && node index.js`
+    5. Add environment variables
+    6. Deploy
+  </Accordion>
+</AccordionGroup>
+
+## CORS Configuration for Production
+
+Update your `server/index.js` to restrict CORS to your production frontend:
+
+```javascript server/index.js
+const cors = require('cors');
+
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+```
+
+<Warning>
+  **Important**: Always configure CORS properly in production to prevent unauthorized access to your API.
+  
+  Set the `CORS_ORIGIN` environment variable to your frontend's production URL:
+  ```
+  CORS_ORIGIN=https://your-app.vercel.app
+  ```
+</Warning>
+
+### Multiple Origins
+
+If you need to allow multiple domains:
+
+```javascript
+const allowedOrigins = [
+  'https://your-app.vercel.app',
+  'https://your-custom-domain.com'
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
+app.use(cors(corsOptions));
+```
+
+## Production Checklist
+
+<Steps>
+  <Step title="Build optimization">
+    - [ ] Production build created with `npm run build`
+    - [ ] Build output tested locally with `serve`
+    - [ ] No console errors in browser
+  </Step>
+  
+  <Step title="Environment configuration">
+    - [ ] Environment variables configured for production
+    - [ ] API URLs updated to production endpoints
+    - [ ] `.env` files added to `.gitignore`
+  </Step>
+  
+  <Step title="Security">
+    - [ ] CORS configured with specific origins (not wildcard `*`)
+    - [ ] No sensitive data in frontend code
+    - [ ] HTTPS enabled on both frontend and backend
+  </Step>
+  
+  <Step title="Performance">
+    - [ ] Static assets cached properly
+    - [ ] Gzip compression enabled
+    - [ ] Images optimized
+  </Step>
+</Steps>
+
+<Tip>
+  Test your production deployment thoroughly before sharing it with users. Check both the frontend UI and backend API endpoints.
+</Tip>
+
+## Common Production Considerations
+
+### Port Configuration
+
+Most platforms assign ports dynamically. Always use:
+
+```javascript
+const PORT = process.env.PORT || 5000;
+```
+
+### Node.js Version
+
+Specify the Node.js version in `server/package.json`:
+
+```json
+"engines": {
+  "node": ">=14.0.0",
+  "npm": ">=6.0.0"
+}
+```
+
+### Health Check Endpoint
+
+Add a health check route for monitoring:
+
+```javascript
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'healthy', timestamp: new Date() });
+});
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Troubleshooting" icon="wrench" href="/guides/troubleshooting">
+    Common deployment issues and solutions
+  </Card>
+  
+  <Card title="Running Locally" icon="laptop-code" href="/guides/running-locally">
+    Return to local development guide
+  </Card>
+</CardGroup>

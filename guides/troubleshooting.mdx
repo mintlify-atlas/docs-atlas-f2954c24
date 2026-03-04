@@ -1,0 +1,653 @@
+---
+title: Troubleshooting
+description: Common issues and solutions for local development and deployment
+---
+
+This guide helps you resolve common issues you might encounter while developing or deploying the application.
+
+## Common Development Issues
+
+<AccordionGroup>
+  <Accordion title="Port 3000 is already in use" icon="circle-exclamation">
+    **Error Message:**
+    ```
+    Something is already running on port 3000.
+    Would you like to run the app on another port instead? (Y/n)
+    ```
+    
+    **Cause**: Another application is using port 3000.
+    
+    **Solutions:**
+    
+    <Tabs>
+      <Tab title="Option 1: Use Different Port">
+        Press `Y` when prompted to run on a different port (usually 3001).
+        
+        The React dev server will automatically open on the new port.
+      </Tab>
+      
+      <Tab title="Option 2: Kill the Process">
+        **On macOS/Linux:**
+        ```bash
+        lsof -ti:3000 | xargs kill -9
+        ```
+        
+        **On Windows:**
+        ```bash
+        netstat -ano | findstr :3000
+        taskkill /PID <PID> /F
+        ```
+        
+        Then restart the dev server:
+        ```bash
+        npm start
+        ```
+      </Tab>
+      
+      <Tab title="Option 3: Set Custom Port">
+        Create `.env` file in the `client` directory:
+        
+        ```bash .env
+        PORT=3001
+        ```
+        
+        The app will always use port 3001.
+      </Tab>
+    </Tabs>
+  </Accordion>
+  
+  <Accordion title="Port 5000 is already in use" icon="circle-exclamation">
+    **Error Message:**
+    ```
+    Error: listen EADDRINUSE: address already in use :::5000
+    ```
+    
+    **Cause**: Another process is using port 5000 (common on macOS where AirPlay uses this port).
+    
+    **Solutions:**
+    
+    <Tabs>
+      <Tab title="Option 1: Use Different Port">
+        Start the server with a different port:
+        ```bash
+        PORT=8000 node index.js
+        ```
+        
+        **Important**: Update the API URL in `client/src/App.js`:
+        ```javascript
+        fetch("http://localhost:8000/")
+        ```
+      </Tab>
+      
+      <Tab title="Option 2: Disable AirPlay (macOS)">
+        1. Open System Preferences
+        2. Go to Sharing
+        3. Uncheck "AirPlay Receiver"
+        4. Restart your backend server
+      </Tab>
+      
+      <Tab title="Option 3: Kill the Process">
+        **On macOS/Linux:**
+        ```bash
+        lsof -ti:5000 | xargs kill -9
+        ```
+        
+        **On Windows:**
+        ```bash
+        netstat -ano | findstr :5000
+        taskkill /PID <PID> /F
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+  
+  <Accordion title="CORS errors in browser console" icon="shield-halved">
+    **Error Message:**
+    ```
+    Access to fetch at 'http://localhost:5000/' from origin 'http://localhost:3000' 
+    has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is 
+    present on the requested resource.
+    ```
+    
+    **Cause**: The backend is not configured to accept requests from the frontend.
+    
+    **Solutions:**
+    
+    <Steps>
+      <Step title="Verify CORS is installed">
+        Check `server/package.json` includes:
+        ```json
+        "dependencies": {
+          "cors": "^2.8.5"
+        }
+        ```
+        
+        If missing, install it:
+        ```bash
+        cd server
+        npm install cors
+        ```
+      </Step>
+      
+      <Step title="Verify CORS is configured in server">
+        Check `server/index.js` includes:
+        ```javascript
+        const cors = require('cors');
+        app.use(cors());
+        ```
+        
+        This should be near the top of the file, before route definitions.
+      </Step>
+      
+      <Step title="Restart the backend server">
+        Stop the server (`Ctrl+C`) and restart:
+        ```bash
+        node index.js
+        ```
+      </Step>
+      
+      <Step title="Clear browser cache">
+        Hard refresh the frontend:
+        - **Windows/Linux**: `Ctrl+Shift+R`
+        - **macOS**: `Cmd+Shift+R`
+      </Step>
+    </Steps>
+    
+    <Note>
+      If you're still seeing CORS errors, check that the backend server is actually running and accessible at `http://localhost:5000`
+    </Note>
+  </Accordion>
+  
+  <Accordion title="node_modules issues or dependency errors" icon="box">
+    **Error Messages:**
+    ```
+    Module not found: Can't resolve 'react'
+    Cannot find module 'express'
+    ```
+    
+    **Cause**: Dependencies not installed or corrupted `node_modules`.
+    
+    **Solution:**
+    
+    <Steps>
+      <Step title="Delete node_modules and package-lock.json">
+        **For frontend:**
+        ```bash
+        cd client
+        rm -rf node_modules package-lock.json
+        ```
+        
+        **For backend:**
+        ```bash
+        cd server
+        rm -rf node_modules package-lock.json
+        ```
+      </Step>
+      
+      <Step title="Clear npm cache">
+        ```bash
+        npm cache clean --force
+        ```
+      </Step>
+      
+      <Step title="Reinstall dependencies">
+        **Frontend:**
+        ```bash
+        cd client
+        npm install
+        ```
+        
+        **Backend:**
+        ```bash
+        cd server
+        npm install
+        ```
+      </Step>
+      
+      <Step title="Restart both servers">
+        Start the backend:
+        ```bash
+        cd server
+        node index.js
+        ```
+        
+        Start the frontend:
+        ```bash
+        cd client
+        npm start
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+  
+  <Accordion title="Backend not connecting to frontend" icon="link-slash">
+    **Symptoms:**
+    - Frontend displays "Frontend Connected to Backend" but no message below
+    - Console shows network errors
+    - Message stays empty
+    
+    **Diagnostic Steps:**
+    
+    <Steps>
+      <Step title="Verify backend is running">
+        Check your terminal where the backend is running. You should see:
+        ```
+        ✅ Server running on port 5000
+        ```
+        
+        If not, start it:
+        ```bash
+        cd server
+        node index.js
+        ```
+      </Step>
+      
+      <Step title="Test backend directly">
+        Open your browser and navigate to:
+        ```
+        http://localhost:5000/
+        ```
+        
+        You should see: "🚀 Express backend is running!"
+        
+        If you get an error, the backend isn't running properly.
+      </Step>
+      
+      <Step title="Check the fetch URL">
+        Verify `client/src/App.js` line 7 has the correct URL:
+        ```javascript
+        fetch("http://localhost:5000/")
+        ```
+        
+        Make sure the port matches your backend port.
+      </Step>
+      
+      <Step title="Check browser console">
+        Open DevTools (F12) and look at the Console tab.
+        
+        Common errors:
+        - **CORS error**: See "CORS errors" section above
+        - **Failed to fetch**: Backend is not running
+        - **ERR_CONNECTION_REFUSED**: Wrong port or backend not started
+      </Step>
+      
+      <Step title="Verify both servers are running">
+        You should have TWO terminal windows:
+        1. Backend on port 5000
+        2. Frontend on port 3000
+        
+        Both must be running simultaneously.
+      </Step>
+    </Steps>
+  </Accordion>
+  
+  <Accordion title="Changes not reflected in browser" icon="rotate">
+    **Symptoms:**
+    - You edit code but don't see changes
+    - Old code still running
+    
+    **Solutions:**
+    
+    <Tabs>
+      <Tab title="Frontend Changes">
+        The React dev server has hot reload enabled.
+        
+        1. **Save the file** (`Ctrl+S` or `Cmd+S`)
+        2. Wait 1-2 seconds
+        3. Browser should auto-refresh
+        
+        If not working:
+        - Hard refresh: `Ctrl+Shift+R` (Windows) or `Cmd+Shift+R` (macOS)
+        - Restart dev server: Stop with `Ctrl+C`, run `npm start`
+        - Clear browser cache
+      </Tab>
+      
+      <Tab title="Backend Changes">
+        The backend does NOT auto-reload by default.
+        
+        **Manual restart:**
+        1. Stop server: `Ctrl+C`
+        2. Start server: `node index.js`
+        
+        **Auto-reload with nodemon:**
+        ```bash
+        npm install -g nodemon
+        nodemon index.js
+        ```
+        
+        Now changes will auto-reload.
+      </Tab>
+    </Tabs>
+  </Accordion>
+</AccordionGroup>
+
+## Production & Deployment Issues
+
+<AccordionGroup>
+  <Accordion title="Build fails with 'npm run build'" icon="hammer">
+    **Error Message:**
+    ```
+    Failed to compile.
+    ```
+    
+    **Common Causes & Solutions:**
+    
+    <Steps>
+      <Step title="Check for syntax errors">
+        Review the error message for file and line number.
+        
+        Common issues:
+        - Missing imports
+        - Unclosed brackets or parentheses
+        - Unused variables (warnings treated as errors in production)
+      </Step>
+      
+      <Step title="Fix linting warnings">
+        Production builds fail on warnings.
+        
+        Either fix the warnings or temporarily disable:
+        ```bash
+        CI=false npm run build
+        ```
+        
+        <Warning>
+          Only use `CI=false` for testing. Fix warnings for production.
+        </Warning>
+      </Step>
+      
+      <Step title="Clear cache and rebuild">
+        ```bash
+        rm -rf node_modules build
+        npm install
+        npm run build
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+  
+  <Accordion title="Deployed frontend can't connect to backend" icon="cloud">
+    **Symptoms:**
+    - Frontend works locally but not in production
+    - Network errors in production console
+    
+    **Solutions:**
+    
+    <Steps>
+      <Step title="Update API URL">
+        The frontend is still pointing to `localhost:5000`.
+        
+        Update `client/src/App.js`:
+        ```javascript
+        const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+        
+        fetch(API_URL)
+          .then((res) => res.text())
+          .then((data) => setMessage(data))
+          .catch((err) => console.error(err));
+        ```
+      </Step>
+      
+      <Step title="Set environment variable">
+        Add to your deployment platform (Vercel, Netlify, etc.):
+        
+        ```
+        REACT_APP_API_URL=https://your-backend-url.com
+        ```
+        
+        Or create `.env.production`:
+        ```bash
+        REACT_APP_API_URL=https://your-backend-url.com
+        ```
+      </Step>
+      
+      <Step title="Rebuild and redeploy">
+        ```bash
+        npm run build
+        ```
+        
+        Then redeploy to your platform.
+      </Step>
+      
+      <Step title="Verify CORS on backend">
+        Update `server/index.js` to allow your production frontend:
+        ```javascript
+        const corsOptions = {
+          origin: 'https://your-frontend-url.com',
+          optionsSuccessStatus: 200
+        };
+        app.use(cors(corsOptions));
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+  
+  <Accordion title="CORS errors in production" icon="shield-halved">
+    **Error Message:**
+    ```
+    Access to fetch at 'https://your-api.com/' from origin 'https://your-app.com' 
+    has been blocked by CORS policy
+    ```
+    
+    **Solution:**
+    
+    Update your backend CORS configuration to include your production frontend URL.
+    
+    ```javascript server/index.js
+    const cors = require('cors');
+    
+    const corsOptions = {
+      origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+      credentials: true,
+      optionsSuccessStatus: 200
+    };
+    
+    app.use(cors(corsOptions));
+    ```
+    
+    Set the environment variable on your backend deployment platform:
+    ```
+    CORS_ORIGIN=https://your-frontend-url.vercel.app
+    ```
+    
+    <Tip>
+      For multiple origins, see the [Deployment Guide](/guides/deployment#cors-configuration-for-production)
+    </Tip>
+  </Accordion>
+  
+  <Accordion title="Environment variables not working" icon="key">
+    **Symptoms:**
+    - `process.env.REACT_APP_API_URL` is `undefined`
+    - Environment variables not loading
+    
+    **Solutions:**
+    
+    <Steps>
+      <Step title="Check variable naming">
+        **Frontend**: Must start with `REACT_APP_`
+        ```bash
+        REACT_APP_API_URL=https://api.example.com  ✓ Correct
+        API_URL=https://api.example.com             ✗ Won't work
+        ```
+      </Step>
+      
+      <Step title="Rebuild after adding variables">
+        Environment variables are embedded at build time.
+        
+        ```bash
+        npm run build
+        ```
+        
+        Changes to `.env` files require a rebuild.
+      </Step>
+      
+      <Step title="Check deployment platform settings">
+        Verify environment variables are set in your deployment platform:
+        - **Vercel**: Settings → Environment Variables
+        - **Netlify**: Site settings → Build & deploy → Environment
+        - **Railway**: Variables tab
+      </Step>
+      
+      <Step title="Restart the application">
+        After adding environment variables, restart or redeploy.
+      </Step>
+    </Steps>
+  </Accordion>
+</AccordionGroup>
+
+## Installation Issues
+
+<AccordionGroup>
+  <Accordion title="npm install fails" icon="download">
+    **Common Errors:**
+    
+    <Tabs>
+      <Tab title="Permission Errors">
+        ```
+        Error: EACCES: permission denied
+        ```
+        
+        **Solution:**
+        
+        **Don't use sudo!** Instead, fix npm permissions:
+        ```bash
+        mkdir ~/.npm-global
+        npm config set prefix '~/.npm-global'
+        echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+        source ~/.bashrc
+        ```
+      </Tab>
+      
+      <Tab title="Network Errors">
+        ```
+        npm ERR! network request failed
+        ```
+        
+        **Solutions:**
+        1. Check your internet connection
+        2. Try a different registry:
+           ```bash
+           npm config set registry https://registry.npmjs.org/
+           ```
+        3. Clear npm cache:
+           ```bash
+           npm cache clean --force
+           ```
+      </Tab>
+      
+      <Tab title="Version Conflicts">
+        ```
+        npm ERR! peer dependency conflict
+        ```
+        
+        **Solution:**
+        ```bash
+        npm install --legacy-peer-deps
+        ```
+      </Tab>
+    </Tabs>
+  </Accordion>
+  
+  <Accordion title="Wrong Node.js version" icon="node-js">
+    **Error Message:**
+    ```
+    error: The engine "node" is incompatible with this module
+    ```
+    
+    **Solution:**
+    
+    <Steps>
+      <Step title="Check current version">
+        ```bash
+        node --version
+        ```
+      </Step>
+      
+      <Step title="Install recommended version">
+        This project works with Node.js 14 or higher.
+        
+        **Option 1: Download from nodejs.org**
+        
+        Visit [nodejs.org](https://nodejs.org) and download the LTS version.
+        
+        **Option 2: Use nvm (recommended)**
+        ```bash
+        # Install nvm first (see nvm documentation)
+        nvm install 18
+        nvm use 18
+        ```
+      </Step>
+      
+      <Step title="Reinstall dependencies">
+        ```bash
+        rm -rf node_modules package-lock.json
+        npm install
+        ```
+      </Step>
+    </Steps>
+  </Accordion>
+</AccordionGroup>
+
+## Getting More Help
+
+<CardGroup cols={2}>
+  <Card title="Check Browser Console" icon="browser">
+    Press `F12` to open DevTools and check the Console tab for detailed error messages.
+  </Card>
+  
+  <Card title="Check Terminal Output" icon="terminal">
+    Look at both terminal windows (frontend and backend) for error messages.
+  </Card>
+  
+  <Card title="Verify Setup" icon="list-check">
+    Review the [Running Locally](/guides/running-locally) guide to ensure correct setup.
+  </Card>
+  
+  <Card title="Test APIs Directly" icon="vial">
+    Use your browser or Postman to test backend endpoints directly.
+  </Card>
+</CardGroup>
+
+<Tip>
+  When asking for help, include:
+  - Error message (exact text)
+  - Your operating system
+  - Node.js version (`node --version`)
+  - What you were trying to do
+  - Steps you've already tried
+</Tip>
+
+## Still Stuck?
+
+If you've tried the solutions above and still have issues:
+
+1. **Double-check the basics**:
+   - Both servers running?
+   - Correct ports (3000 and 5000)?
+   - Dependencies installed in both `client` and `server`?
+
+2. **Start fresh**:
+   ```bash
+   # Clean everything
+   cd client && rm -rf node_modules build
+   cd ../server && rm -rf node_modules
+   
+   # Reinstall
+   cd ../client && npm install
+   cd ../server && npm install
+   
+   # Start both servers
+   # Terminal 1:
+   cd server && node index.js
+   # Terminal 2:
+   cd client && npm start
+   ```
+
+3. **Check the exact error**: Read error messages carefully - they usually point to the exact problem.
+
+<Note>
+  Most issues are caused by:
+  - Missing dependencies (forgot `npm install`)
+  - Wrong directory (not in `client` or `server` folder)
+  - Port conflicts
+  - One server not running
+</Note>

@@ -1,0 +1,225 @@
+---
+title: Frontend Setup
+description: Configure and run the React frontend application
+---
+
+## Project Structure
+
+The frontend is built with React and follows the standard Create React App structure:
+
+```
+client/
+├── public/
+│   ├── index.html          # HTML template
+│   ├── manifest.json       # PWA configuration
+│   ├── robots.txt          # Search engine instructions
+│   └── favicon.ico         # App icon
+├── src/
+│   ├── App.js              # Main application component
+│   ├── App.css             # Component styles
+│   ├── App.test.js         # Component tests
+│   ├── index.js            # Application entry point
+│   ├── index.css           # Global styles
+│   ├── reportWebVitals.js  # Performance monitoring
+│   └── setupTests.js       # Test configuration
+└── package.json            # Dependencies and scripts
+```
+
+## Dependencies
+
+The project uses the following key dependencies:
+
+<CodeGroup>
+
+```json package.json
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  }
+}
+```
+
+</CodeGroup>
+
+### Core Libraries
+
+<CardGroup cols={2}>
+  <Card title="React" icon="react">
+    **Version 19.2.0** - Core React library for building the UI
+  </Card>
+  <Card title="React DOM" icon="code">
+    **Version 19.2.0** - Renders React components to the DOM
+  </Card>
+  <Card title="React Scripts" icon="gear">
+    **Version 5.0.1** - Build and development tools from Create React App
+  </Card>
+  <Card title="Web Vitals" icon="chart-line">
+    **Version 2.1.4** - Performance monitoring and analytics
+  </Card>
+</CardGroup>
+
+### Testing Libraries
+
+<Info>
+The project includes a comprehensive testing setup with React Testing Library and Jest DOM for writing component tests.
+</Info>
+
+- `@testing-library/react` - Test React components
+- `@testing-library/jest-dom` - Custom Jest matchers for DOM
+- `@testing-library/user-event` - Simulate user interactions
+- `@testing-library/dom` - Core DOM testing utilities
+
+## Available Scripts
+
+The following npm scripts are available for development:
+
+<Tabs>
+  <Tab title="start">
+    ### Development Server
+    
+    ```bash
+    npm start
+    ```
+    
+    Runs the app in development mode at [http://localhost:3000](http://localhost:3000)
+    
+    <Note>
+    The page will reload when you make changes. You may also see lint errors in the console.
+    </Note>
+  </Tab>
+  
+  <Tab title="build">
+    ### Production Build
+    
+    ```bash
+    npm run build
+    ```
+    
+    Builds the app for production to the `build` folder.
+    
+    - Bundles React in production mode
+    - Optimizes the build for best performance
+    - Minifies files and includes hashes in filenames
+  </Tab>
+  
+  <Tab title="test">
+    ### Run Tests
+    
+    ```bash
+    npm test
+    ```
+    
+    Launches the test runner in interactive watch mode.
+    
+    <Info>
+    See the [running tests](https://facebook.github.io/create-react-app/docs/running-tests) documentation for more information.
+    </Info>
+  </Tab>
+  
+  <Tab title="eject">
+    ### Eject Configuration
+    
+    ```bash
+    npm run eject
+    ```
+    
+    <Warning>
+    **This is a one-way operation. Once you eject, you can't go back!**
+    </Warning>
+    
+    Ejects the Create React App configuration, giving you full control over:
+    - Webpack configuration
+    - Babel configuration
+    - ESLint configuration
+    - Build scripts
+  </Tab>
+</Tabs>
+
+## Development Server Configuration
+
+### Entry Point
+
+The application starts from `src/index.js`:
+
+```jsx src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+reportWebVitals();
+```
+
+### Key Features
+
+<Steps>
+  <Step title="React 18+ Root API">
+    Uses `ReactDOM.createRoot()` for concurrent rendering features
+  </Step>
+  
+  <Step title="Strict Mode">
+    Wraps the app in `<React.StrictMode>` to highlight potential problems during development
+  </Step>
+  
+  <Step title="Performance Monitoring">
+    Includes `reportWebVitals()` for measuring and analyzing app performance
+  </Step>
+</Steps>
+
+### Browser Support
+
+The application is configured to support:
+
+**Production:**
+- Browsers with >0.2% market share
+- Excludes dead browsers and Opera Mini
+
+**Development:**
+- Latest Chrome version
+- Latest Firefox version
+- Latest Safari version
+
+## Quick Start
+
+<Steps>
+  <Step title="Install Dependencies">
+    ```bash
+    cd client
+    npm install
+    ```
+  </Step>
+  
+  <Step title="Start Development Server">
+    ```bash
+    npm start
+    ```
+    
+    The app will open at [http://localhost:3000](http://localhost:3000)
+  </Step>
+  
+  <Step title="Verify Backend Connection">
+    Ensure the backend server is running at [http://localhost:5000](http://localhost:5000)
+  </Step>
+</Steps>
+
+<Check>
+You're ready to start developing! The app will automatically reload as you make changes.
+</Check>

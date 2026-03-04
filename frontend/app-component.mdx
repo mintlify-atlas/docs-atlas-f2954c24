@@ -1,0 +1,387 @@
+---
+title: App Component
+description: Understanding the main React application component
+---
+
+## Overview
+
+The `App` component is the root component of the React application. It demonstrates a simple client-server communication pattern by fetching data from the backend API.
+
+<Info>
+This component is located at `client/src/App.js`
+</Info>
+
+## Complete Source Code
+
+```jsx App.js
+import { useEffect, useState } from "react";
+
+function App() {
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    fetch("http://localhost:5000/")
+      .then((res) => res.text())
+      .then((data) => setMessage(data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <h1>Frontend Connected to Backend</h1>
+      <h2>{message}</h2>
+    </div>
+  );
+}
+
+export default App;
+```
+
+## Component Breakdown
+
+<Tabs>
+  <Tab title="State Management">
+    ### useState Hook
+    
+    ```jsx
+    const [message, setMessage] = useState("");
+    ```
+    
+    The component uses React's `useState` hook to manage the message received from the backend.
+    
+    <CardGroup cols={2}>
+      <Card title="message" icon="message">
+        State variable that holds the text returned from the backend API
+      </Card>
+      <Card title="setMessage" icon="pen">
+        Function to update the message state when data is received
+      </Card>
+    </CardGroup>
+    
+    **Initial State:** Empty string (`""`)
+    
+    **Updated:** When the API call successfully returns data
+  </Tab>
+  
+  <Tab title="Side Effects">
+    ### useEffect Hook
+    
+    ```jsx
+    useEffect(() => {
+      fetch("http://localhost:5000/")
+        .then((res) => res.text())
+        .then((data) => setMessage(data))
+        .catch((err) => console.error(err));
+    }, []);
+    ```
+    
+    The `useEffect` hook runs after the component mounts to fetch data from the backend.
+    
+    <Steps>
+      <Step title="Runs on Mount">
+        Empty dependency array `[]` means this effect runs once when the component first renders
+      </Step>
+      
+      <Step title="Fetches Data">
+        Makes a GET request to `http://localhost:5000/`
+      </Step>
+      
+      <Step title="Processes Response">
+        Converts the response to text using `.text()`
+      </Step>
+      
+      <Step title="Updates State">
+        Calls `setMessage(data)` to store the received text
+      </Step>
+      
+      <Step title="Error Handling">
+        Catches and logs any errors to the console
+      </Step>
+    </Steps>
+    
+    <Note>
+    The empty dependency array ensures the fetch happens only once, preventing infinite loops.
+    </Note>
+  </Tab>
+  
+  <Tab title="API Call">
+    ### Fetch Request Details
+    
+    ```jsx
+    fetch("http://localhost:5000/")
+      .then((res) => res.text())
+      .then((data) => setMessage(data))
+      .catch((err) => console.error(err));
+    ```
+    
+    #### Endpoint
+    
+    ```
+    http://localhost:5000/
+    ```
+    
+    <ParamField path="Method" type="GET" default="GET">
+      Implicit GET request (default for fetch)
+    </ParamField>
+    
+    <ParamField path="Response Type" type="text/plain">
+      The response is converted to text using `.text()` method
+    </ParamField>
+    
+    #### Response Flow
+    
+    ```mermaid
+    graph LR
+      A[Component Mounts] --> B[Fetch API Call]
+      B --> C[Backend Responds]
+      C --> D[Convert to Text]
+      D --> E[Update State]
+      E --> F[Re-render UI]
+      B --> G[Error Occurs]
+      G --> H[Log to Console]
+    ```
+    
+    <Warning>
+    Make sure the backend server is running at `http://localhost:5000/` before starting the frontend, otherwise the fetch will fail.
+    </Warning>
+  </Tab>
+  
+  <Tab title="JSX Rendering">
+    ### Component UI
+    
+    ```jsx
+    return (
+      <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <h1>Frontend Connected to Backend</h1>
+        <h2>{message}</h2>
+      </div>
+    );
+    ```
+    
+    #### Inline Styles
+    
+    The component uses inline styles for simplicity:
+    
+    ```jsx
+    style={{ textAlign: "center", marginTop: "50px" }}
+    ```
+    
+    <ResponseField name="textAlign" type="center">
+      Centers all text content horizontally
+    </ResponseField>
+    
+    <ResponseField name="marginTop" type="50px">
+      Adds spacing from the top of the viewport
+    </ResponseField>
+    
+    #### Dynamic Content
+    
+    ```jsx
+    <h2>{message}</h2>
+    ```
+    
+    The `{message}` expression displays the current state value:
+    
+    - **Before API call completes:** Empty (just the heading is visible)
+    - **After successful API call:** Displays the text from the backend
+    - **On error:** Remains empty (error is logged to console)
+  </Tab>
+</Tabs>
+
+## Data Flow
+
+<Steps>
+  <Step title="Initial Render">
+    Component renders with an empty `message` state
+    
+    ```jsx
+    <h2></h2>  // Empty heading
+    ```
+  </Step>
+  
+  <Step title="Effect Execution">
+    `useEffect` hook triggers the API call after mount
+  </Step>
+  
+  <Step title="API Request">
+    Fetch request sent to `http://localhost:5000/`
+  </Step>
+  
+  <Step title="Backend Response">
+    Backend returns a text response (e.g., "Hello from the backend!")
+  </Step>
+  
+  <Step title="State Update">
+    `setMessage(data)` updates the state with the response
+  </Step>
+  
+  <Step title="Re-render">
+    Component re-renders with the new message
+    
+    ```jsx
+    <h2>Hello from the backend!</h2>
+    ```
+  </Step>
+</Steps>
+
+## Example Output
+
+When the backend is running and returns `"Hello from the backend!"`, the rendered output is:
+
+<Frame>
+  <div style={{textAlign: 'center', padding: '50px'}}>
+    <h1>Frontend Connected to Backend</h1>
+    <h2>Hello from the backend!</h2>
+  </div>
+</Frame>
+
+## Key Concepts
+
+<AccordionGroup>
+  <Accordion title="Why useEffect?">
+    The `useEffect` hook is used because:
+    
+    - Fetch operations are **side effects** (they interact with external systems)
+    - We need to run the fetch **after** the component is mounted to the DOM
+    - It prevents the fetch from running on every render
+    
+    Without `useEffect`, attempting to fetch during render would cause issues:
+    ```jsx
+    // ❌ DON'T DO THIS
+    function App() {
+      const [message, setMessage] = useState("");
+      
+      // This would run on every render, causing infinite loop!
+      fetch("http://localhost:5000/")
+        .then((res) => res.text())
+        .then((data) => setMessage(data));  // Triggers re-render
+      
+      return <div>{message}</div>;
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Dependency Array">
+    The empty dependency array `[]` is crucial:
+    
+    ```jsx
+    useEffect(() => {
+      // This runs ONCE after initial render
+    }, []);  // Empty array = run once
+    ```
+    
+    Different behaviors based on the dependency array:
+    
+    | Dependency Array | Behavior |
+    |-----------------|----------|
+    | `[]` | Runs once after mount |
+    | `[value]` | Runs when `value` changes |
+    | No array | Runs after every render |
+  </Accordion>
+  
+  <Accordion title="Error Handling">
+    The `.catch()` ensures errors don't crash the app:
+    
+    ```jsx
+    .catch((err) => console.error(err));
+    ```
+    
+    Common errors that might occur:
+    
+    - **Network Error:** Backend server is not running
+    - **CORS Error:** Backend doesn't allow requests from `localhost:3000`
+    - **Timeout:** Backend takes too long to respond
+    
+    <Tip>
+    For production apps, consider showing error messages to users instead of just logging to console.
+    </Tip>
+  </Accordion>
+  
+  <Accordion title="Response Format">
+    The code uses `.text()` to parse the response:
+    
+    ```jsx
+    .then((res) => res.text())
+    ```
+    
+    For different response types, use:
+    
+    | Method | Use Case | Example |
+    |--------|----------|----------|
+    | `.text()` | Plain text | `"Hello World"` |
+    | `.json()` | JSON data | `{"message": "Hello"}` |
+    | `.blob()` | Binary data | Images, files |
+    | `.arrayBuffer()` | Raw binary | Audio, video |
+  </Accordion>
+</AccordionGroup>
+
+## Customization Ideas
+
+<CardGroup cols={2}>
+  <Card title="Loading State" icon="spinner">
+    Add a loading indicator while fetching:
+    
+    ```jsx
+    const [loading, setLoading] = useState(true);
+    
+    useEffect(() => {
+      fetch("http://localhost:5000/")
+        .then((res) => res.text())
+        .then((data) => {
+          setMessage(data);
+          setLoading(false);
+        });
+    }, []);
+    
+    if (loading) return <div>Loading...</div>;
+    ```
+  </Card>
+  
+  <Card title="Error UI" icon="triangle-exclamation">
+    Display errors to users:
+    
+    ```jsx
+    const [error, setError] = useState(null);
+    
+    useEffect(() => {
+      fetch("http://localhost:5000/")
+        .then((res) => res.text())
+        .then((data) => setMessage(data))
+        .catch((err) => setError(err.message));
+    }, []);
+    
+    if (error) return <div>Error: {error}</div>;
+    ```
+  </Card>
+  
+  <Card title="JSON API" icon="code">
+    Switch to JSON responses:
+    
+    ```jsx
+    fetch("http://localhost:5000/api/data")
+      .then((res) => res.json())
+      .then((data) => setMessage(data.message));
+    ```
+  </Card>
+  
+  <Card title="Refresh Button" icon="rotate">
+    Add manual refresh capability:
+    
+    ```jsx
+    const fetchData = () => {
+      fetch("http://localhost:5000/")
+        .then((res) => res.text())
+        .then((data) => setMessage(data));
+    };
+    
+    useEffect(fetchData, []);
+    
+    return (
+      <div>
+        <h2>{message}</h2>
+        <button onClick={fetchData}>Refresh</button>
+      </div>
+    );
+    ```
+  </Card>
+</CardGroup>

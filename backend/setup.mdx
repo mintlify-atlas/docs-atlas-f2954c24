@@ -1,0 +1,122 @@
+---
+title: 'Backend Setup'
+description: 'Learn how to set up and configure the Express backend server'
+---
+
+## Folder Structure
+
+The backend server is organized in a simple, straightforward structure:
+
+```
+server/
+├── index.js           # Main Express application entry point
+├── package.json       # Project dependencies
+└── package-lock.json  # Dependency lock file
+```
+
+<Note>
+  This minimal structure is perfect for small to medium projects. As your application grows, you may want to organize routes, controllers, and middleware into separate directories.
+</Note>
+
+## Dependencies
+
+The backend uses two main dependencies:
+
+<Tabs>
+  <Tab title="express">
+    **Express v5.1.0** - Fast, unopinionated, minimalist web framework for Node.js
+    
+    Express provides a robust set of features for building web and mobile applications, including:
+    - HTTP utility methods and middleware
+    - Routing system
+    - Request/response handling
+  </Tab>
+  
+  <Tab title="cors">
+    **CORS v2.8.5** - Middleware for enabling Cross-Origin Resource Sharing
+    
+    CORS allows your backend to accept requests from different origins (like your frontend running on a different port). This is essential for development when your frontend and backend run on separate servers.
+  </Tab>
+</Tabs>
+
+### package.json
+
+```json
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
+```
+
+## Installation
+
+<Steps>
+  <Step title="Navigate to the server directory">
+    ```bash
+    cd server
+    ```
+  </Step>
+  
+  <Step title="Install dependencies">
+    ```bash
+    npm install
+    ```
+    
+    This will install both `express` and `cors` packages along with their dependencies.
+  </Step>
+  
+  <Step title="Verify installation">
+    Check that `node_modules` directory was created and contains the installed packages.
+  </Step>
+</Steps>
+
+## Port Configuration
+
+The server uses a flexible port configuration system:
+
+<ParamField path="PORT" type="environment variable" default="5000">
+  The port number on which the server will listen for incoming requests.
+  
+  - **Environment Variable**: Set `PORT` in your environment to use a custom port
+  - **Default Value**: `5000` if `PORT` is not set
+</ParamField>
+
+### Setting the Port
+
+<Tabs>
+  <Tab title="Default (5000)">
+    Simply run the server without setting any environment variables:
+    
+    ```bash
+    node index.js
+    ```
+    
+    The server will start on port `5000`.
+  </Tab>
+  
+  <Tab title="Custom Port (Linux/Mac)">
+    Set the `PORT` environment variable before running:
+    
+    ```bash
+    PORT=3001 node index.js
+    ```
+  </Tab>
+  
+  <Tab title="Custom Port (Windows)">
+    Set the environment variable using Windows syntax:
+    
+    ```bash
+    set PORT=3001 && node index.js
+    ```
+  </Tab>
+</Tabs>
+
+<Warning>
+  Make sure the port you choose is not already in use by another application. Common ports like 3000 (React default) and 5000 are often occupied during development.
+</Warning>
+
+## Next Steps
+
+Once you've installed the dependencies and understood the port configuration, you're ready to learn about the [server configuration](/backend/server) and explore the [API endpoints](/backend/api).

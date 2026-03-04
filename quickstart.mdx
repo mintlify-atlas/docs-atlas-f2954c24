@@ -1,80 +1,310 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: 'Quickstart Guide'
+description: 'Get your full-stack application up and running in minutes'
+icon: 'rocket'
 ---
 
-## Get started in three steps
+This guide will walk you through setting up and running the full-stack mini project. You'll have both the React frontend and Express backend running locally in just a few minutes.
 
-Get your documentation site running locally and make your first customization.
+## Prerequisites
 
-### Step 1: Set up your local environment
-
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
-
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
-
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
+Before you begin, ensure you have the following installed on your system:
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Node.js" icon="node">
+    Version 14.x or higher
+    
+    Check your version:
+    ```bash
+    node --version
+    ```
+  </Card>
+  <Card title="npm" icon="box">
+    Version 6.x or higher (comes with Node.js)
+    
+    Check your version:
+    ```bash
+    npm --version
+    ```
+  </Card>
 </CardGroup>
 
+<Tip>
+  Don't have Node.js installed? Download it from [nodejs.org](https://nodejs.org/). We recommend using the LTS (Long Term Support) version.
+</Tip>
+
+## Installation
+
+<Steps>
+  <Step title="Clone the Repository">
+    First, clone the project repository to your local machine:
+    
+    ```bash
+    git clone <repository-url>
+    cd mini-project
+    ```
+    
+    You should see two main directories:
+    - `client/` - React frontend application
+    - `server/` - Express backend server
+  </Step>
+
+  <Step title="Install Server Dependencies">
+    Navigate to the server directory and install the required packages:
+    
+    ```bash
+    cd server
+    npm install
+    ```
+    
+    This will install:
+    - **express** (v5.1.0) - Fast, minimalist web framework
+    - **cors** (v2.8.5) - Enable Cross-Origin Resource Sharing
+    
+    <Note>
+      The server uses a minimal setup with just two dependencies, making it lightweight and easy to understand.
+    </Note>
+  </Step>
+
+  <Step title="Install Client Dependencies">
+    Open a new terminal window, navigate to the client directory, and install dependencies:
+    
+    ```bash
+    cd client
+    npm install
+    ```
+    
+    This will install React and related testing libraries including:
+    - **react** (v19.2.0) - Core React library
+    - **react-dom** (v19.2.0) - React DOM renderer
+    - **react-scripts** (v5.0.1) - Create React App build tools
+    
+    <Warning>
+      The installation may take a few minutes as it downloads all the necessary packages. Make sure you have a stable internet connection.
+    </Warning>
+  </Step>
+</Steps>
+
+## Running the Application
+
+The application requires both the backend and frontend to be running simultaneously. You'll need two terminal windows.
+
+<Steps>
+  <Step title="Start the Backend Server">
+    In your first terminal, navigate to the server directory and start the Express server:
+    
+    ```bash
+    cd server
+    node index.js
+    ```
+    
+    You should see the following output:
+    ```
+    ✅ Server running on port 5000
+    ```
+    
+    The server is now listening on `http://localhost:5000` and ready to accept requests.
+    
+    <Accordion title="What does the server do?">
+      The Express server provides a simple API endpoint that the React frontend connects to. Here's the core functionality:
+      
+      ```javascript server/index.js
+      const express = require('express');
+      const cors = require('cors');
+      const app = express();
+      
+      app.use(cors());
+      
+      app.get('/', (req, res) => {
+        res.send('🚀 Express backend is running!');
+      });
+      
+      const PORT = process.env.PORT || 5000;
+      app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+      ```
+      
+      The CORS middleware is essential - it allows the React app (running on port 3000) to make requests to the server (running on port 5000).
+    </Accordion>
+  </Step>
+
+  <Step title="Start the Frontend Application">
+    In your second terminal, navigate to the client directory and start the React development server:
+    
+    ```bash
+    cd client
+    npm start
+    ```
+    
+    The React development server will start and automatically open your browser to `http://localhost:3000`.
+    
+    <Note>
+      If your browser doesn't open automatically, manually navigate to `http://localhost:3000` in your preferred browser.
+    </Note>
+  </Step>
+
+  <Step title="Verify the Connection">
+    Once both servers are running, you should see:
+    
+    1. **In your browser**: A page displaying "Frontend Connected to Backend" with the message "🚀 Express backend is running!"
+    2. **In your server terminal**: The console log showing the server is running on port 5000
+    3. **In your client terminal**: Compilation messages showing the app compiled successfully
+    
+    <Accordion title="How does the connection work?">
+      The React app fetches data from the Express server when it loads:
+      
+      ```javascript client/src/App.js
+      import { useEffect, useState } from "react";
+      
+      function App() {
+        const [message, setMessage] = useState("");
+      
+        useEffect(() => {
+          fetch("http://localhost:5000/")
+            .then((res) => res.text())
+            .then((data) => setMessage(data))
+            .catch((err) => console.error(err));
+        }, []);
+      
+        return (
+          <div style={{ textAlign: "center", marginTop: "50px" }}>
+            <h1>Frontend Connected to Backend</h1>
+            <h2>{message}</h2>
+          </div>
+        );
+      }
+      ```
+      
+      The `useEffect` hook runs once when the component mounts, fetching the message from the backend and displaying it.
+    </Accordion>
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Port 5000 or 3000 is already in use">
+    **Problem**: You see an error like `Error: listen EADDRINUSE: address already in use :::5000`
+    
+    **Solution**: Another application is using that port. You have two options:
+    
+    1. **Stop the other application** using the port
+    2. **Change the port number**:
+       - For the server, set the PORT environment variable:
+         ```bash
+         PORT=5001 node index.js
+         ```
+       - Then update the fetch URL in `client/src/App.js` to match the new port
+    
+    <Tip>
+      On macOS, AirPlay Receiver often uses port 5000. You can disable it in System Preferences > Sharing > AirPlay Receiver.
+    </Tip>
+  </Accordion>
+
+  <Accordion title="CORS errors in the browser console">
+    **Problem**: You see errors like `Access to fetch at 'http://localhost:5000/' has been blocked by CORS policy`
+    
+    **Solution**: Make sure:
+    1. The server is running and includes the CORS middleware
+    2. The `cors` package is properly installed in the server directory
+    3. Restart the server after making any changes
+    
+    The server already includes CORS configuration:
+    ```javascript
+    const cors = require('cors');
+    app.use(cors());
+    ```
+  </Accordion>
+
+  <Accordion title="'fetch is not defined' or connection refused">
+    **Problem**: The frontend can't connect to the backend
+    
+    **Solution**:
+    1. **Verify the backend is running**: Check that you see "✅ Server running on port 5000" in the server terminal
+    2. **Check the URL**: Ensure the fetch URL in `App.js` matches your server's port (default: `http://localhost:5000/`)
+    3. **Test the backend directly**: Open `http://localhost:5000/` in your browser - you should see "🚀 Express backend is running!"
+  </Accordion>
+
+  <Accordion title="npm install fails with dependency errors">
+    **Problem**: You encounter errors during `npm install`
+    
+    **Solution**:
+    1. **Clear npm cache**:
+       ```bash
+       npm cache clean --force
+       ```
+    2. **Delete existing node_modules and package-lock.json**:
+       ```bash
+       rm -rf node_modules package-lock.json
+       npm install
+       ```
+    3. **Check Node.js version**: Some packages require specific Node.js versions. Try updating to the latest LTS version.
+  </Accordion>
+
+  <Accordion title="Blank page or 'Cannot GET /' error">
+    **Problem**: The frontend shows a blank page or error
+    
+    **Solution**:
+    1. **Check the browser console** for JavaScript errors (F12 or Cmd+Option+I)
+    2. **Ensure both servers are running**: You need both the Express server and React dev server
+    3. **Clear browser cache**: Hard refresh with Ctrl+Shift+R (or Cmd+Shift+R on macOS)
+    4. **Verify the React app compiled successfully**: Look for "Compiled successfully!" in the client terminal
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Frontend Setup" icon="react" href="/frontend/setup">
+    Learn about the React application structure and configuration
+  </Card>
+  <Card title="Backend API" icon="code" href="/backend/api">
+    Explore the available backend endpoints
+  </Card>
+  <Card title="Running Locally" icon="laptop-code" href="/guides/running-locally">
+    Complete guide for local development
+  </Card>
+  <Card title="Deployment" icon="cloud" href="/guides/deployment">
+    Deploy your application to production
+  </Card>
+</CardGroup>
+
+## Quick Reference
+
+Here's a quick summary of the commands you'll use:
+
+<CodeGroup>
+```bash Server
+# Navigate to server directory
+cd server
+
+# Install dependencies (first time only)
+npm install
+
+# Start the server
+node index.js
+
+# Start with custom port
+PORT=5001 node index.js
+```
+
+```bash Client
+# Navigate to client directory
+cd client
+
+# Install dependencies (first time only)
+npm install
+
+# Start development server
+npm start
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+```
+</CodeGroup>
+
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+  Keep both terminal windows open while developing. The React development server includes hot reloading, so changes to your frontend code will automatically refresh in the browser.
 </Note>

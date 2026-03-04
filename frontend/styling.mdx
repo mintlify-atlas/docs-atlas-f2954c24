@@ -1,0 +1,539 @@
+---
+title: Styling
+description: CSS structure and customization for the React frontend
+---
+
+## CSS File Structure
+
+The frontend uses two main CSS files for styling:
+
+<CardGroup cols={2}>
+  <Card title="index.css" icon="globe">
+    **Global Styles**
+    
+    Applied to the entire application, including body and code elements
+  </Card>
+  <Card title="App.css" icon="file">
+    **Component Styles**
+    
+    Default styles for App component elements (currently unused in the main component)
+  </Card>
+</CardGroup>
+
+## Global Styles (index.css)
+
+The `index.css` file defines base styles for the entire application:
+
+```css index.css
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+```
+
+<Tabs>
+  <Tab title="Body Styles">
+    ### Body Element
+    
+    ```css
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+        'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+        sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    ```
+    
+    <ResponseField name="margin" type="0">
+      Removes default browser margin for edge-to-edge layouts
+    </ResponseField>
+    
+    <ResponseField name="font-family" type="system fonts">
+      Uses native system fonts for optimal performance and familiarity:
+      - **macOS/iOS:** -apple-system, BlinkMacSystemFont, Helvetica Neue
+      - **Windows:** Segoe UI
+      - **Android:** Roboto
+      - **Ubuntu:** Ubuntu
+      - **Fallback:** sans-serif
+    </ResponseField>
+    
+    <ResponseField name="-webkit-font-smoothing" type="antialiased">
+      Improves font rendering on WebKit browsers (Safari, Chrome)
+    </ResponseField>
+    
+    <ResponseField name="-moz-osx-font-smoothing" type="grayscale">
+      Improves font rendering on Firefox for macOS
+    </ResponseField>
+  </Tab>
+  
+  <Tab title="Code Styles">
+    ### Code Element
+    
+    ```css
+    code {
+      font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+        monospace;
+    }
+    ```
+    
+    <ResponseField name="font-family" type="monospace fonts">
+      Uses monospace fonts for displaying code:
+      - **Primary:** source-code-pro
+      - **macOS:** Menlo, Monaco
+      - **Windows:** Consolas
+      - **Fallback:** Courier New, monospace
+    </ResponseField>
+    
+    <Info>
+    These fonts ensure proper alignment and readability for code snippets within the application.
+    </Info>
+  </Tab>
+</Tabs>
+
+## Component Styles (App.css)
+
+The `App.css` file provides default styles that can be used for App component variants:
+
+```css App.css
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+```
+
+<Note>
+These styles are from Create React App's default template. The current App component uses inline styles instead, so these classes are available but not actively used.
+</Note>
+
+### Available CSS Classes
+
+<AccordionGroup>
+  <Accordion title=".App">
+    ```css
+    .App {
+      text-align: center;
+    }
+    ```
+    
+    Centers all text content within the App component.
+  </Accordion>
+  
+  <Accordion title=".App-logo">
+    ```css
+    .App-logo {
+      height: 40vmin;
+      pointer-events: none;
+    }
+    ```
+    
+    Styles for a logo image:
+    - **Height:** 40% of viewport minimum dimension (responsive)
+    - **Pointer Events:** Disabled (logo is not interactive)
+    
+    With animation support:
+    ```css
+    @media (prefers-reduced-motion: no-preference) {
+      .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+      }
+    }
+    ```
+    
+    <Info>
+    The animation only runs if the user hasn't requested reduced motion (accessibility feature).
+    </Info>
+  </Accordion>
+  
+  <Accordion title=".App-header">
+    ```css
+    .App-header {
+      background-color: #282c34;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: calc(10px + 2vmin);
+      color: white;
+    }
+    ```
+    
+    Full-screen dark header with centered content:
+    
+    <ParamField path="background-color" type="#282c34">
+      Dark gray background
+    </ParamField>
+    
+    <ParamField path="min-height" type="100vh">
+      Full viewport height
+    </ParamField>
+    
+    <ParamField path="display" type="flex">
+      Flexbox layout for centering
+    </ParamField>
+    
+    <ParamField path="font-size" type="calc(10px + 2vmin)">
+      Responsive font size that scales with viewport
+    </ParamField>
+  </Accordion>
+  
+  <Accordion title=".App-link">
+    ```css
+    .App-link {
+      color: #61dafb;
+    }
+    ```
+    
+    React-branded cyan color for links.
+  </Accordion>
+  
+  <Accordion title="@keyframes App-logo-spin">
+    ```css
+    @keyframes App-logo-spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    ```
+    
+    Defines a continuous 360-degree rotation animation for the logo.
+  </Accordion>
+</AccordionGroup>
+
+## Current Component Styling
+
+The current `App` component uses **inline styles** instead of CSS classes:
+
+```jsx App.js
+<div style={{ textAlign: "center", marginTop: "50px" }}>
+  <h1>Frontend Connected to Backend</h1>
+  <h2>{message}</h2>
+</div>
+```
+
+<Tabs>
+  <Tab title="Inline Styles">
+    ### Current Approach
+    
+    ```jsx
+    style={{ textAlign: "center", marginTop: "50px" }}
+    ```
+    
+    **Advantages:**
+    - Quick and simple for small components
+    - Styles are scoped to the component
+    - No additional CSS classes needed
+    
+    **Disadvantages:**
+    - Harder to reuse across components
+    - No pseudo-classes (`:hover`, `:focus`, etc.)
+    - Slightly less performant than CSS classes
+  </Tab>
+  
+  <Tab title="Using CSS Classes">
+    ### Alternative: CSS Classes
+    
+    You can switch to using the available CSS classes:
+    
+    ```jsx
+    // Import the CSS file
+    import './App.css';
+    
+    function App() {
+      return (
+        <div className="App">
+          <h1>Frontend Connected to Backend</h1>
+          <h2>{message}</h2>
+        </div>
+      );
+    }
+    ```
+    
+    Then customize `App.css`:
+    ```css
+    .App {
+      text-align: center;
+      margin-top: 50px;
+    }
+    ```
+  </Tab>
+  
+  <Tab title="Using App-header">
+    ### Alternative: Full-Screen Layout
+    
+    Use the `.App-header` class for a full-screen dark theme:
+    
+    ```jsx
+    import './App.css';
+    
+    function App() {
+      return (
+        <div className="App-header">
+          <h1>Frontend Connected to Backend</h1>
+          <h2>{message}</h2>
+        </div>
+      );
+    }
+    ```
+    
+    <Frame>
+      <div style={{
+        backgroundColor: '#282c34',
+        minHeight: '300px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white',
+        fontSize: '24px'
+      }}>
+        <h1>Frontend Connected to Backend</h1>
+        <h2>Hello from the backend!</h2>
+      </div>
+    </Frame>
+  </Tab>
+</Tabs>
+
+## Customization Examples
+
+<CodeGroup>
+
+```css Custom Colors
+/* App.css */
+.App {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.App h1 {
+  color: #4a90e2;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.App h2 {
+  color: #2ecc71;
+  font-size: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+```
+
+```css Dark Theme
+/* index.css */
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #1a1a1a;
+  color: #e0e0e0;
+}
+
+/* App.css */
+.App h1 {
+  color: #61dafb;
+}
+
+.App h2 {
+  color: #98c379;
+  background-color: #2d2d2d;
+}
+```
+
+```css Responsive Layout
+/* App.css */
+.App {
+  text-align: center;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.App h1 {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+}
+
+.App h2 {
+  font-size: clamp(1rem, 3vw, 2rem);
+}
+
+@media (max-width: 768px) {
+  .App {
+    padding: 1rem;
+  }
+}
+```
+
+```css Animated Gradient
+/* App.css */
+.App {
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradient 15s ease infinite;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.App h1, .App h2 {
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+```
+
+</CodeGroup>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use CSS Variables" icon="palette">
+    Define reusable color schemes:
+    
+    ```css
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #2ecc71;
+      --background: #ffffff;
+      --text: #333333;
+    }
+    
+    .App h1 {
+      color: var(--primary-color);
+    }
+    ```
+  </Card>
+  
+  <Card title="Mobile-First Design" icon="mobile">
+    Start with mobile styles, then add desktop:
+    
+    ```css
+    /* Mobile styles */
+    .App {
+      padding: 1rem;
+    }
+    
+    /* Desktop styles */
+    @media (min-width: 768px) {
+      .App {
+        padding: 2rem;
+      }
+    }
+    ```
+  </Card>
+  
+  <Card title="Semantic Class Names" icon="tag">
+    Use meaningful, descriptive names:
+    
+    ```css
+    /* Good */
+    .message-container { }
+    .primary-heading { }
+    
+    /* Avoid */
+    .box1 { }
+    .blue-text { }
+    ```
+  </Card>
+  
+  <Card title="Accessibility" icon="universal-access">
+    Ensure sufficient contrast and focus states:
+    
+    ```css
+    .App button:focus {
+      outline: 2px solid #4a90e2;
+      outline-offset: 2px;
+    }
+    
+    /* Minimum contrast ratio: 4.5:1 */
+    .App h1 {
+      color: #1a1a1a; /* On white background */
+    }
+    ```
+  </Card>
+</CardGroup>
+
+<Tip>
+**Quick Tip:** To see your CSS changes instantly, the React development server automatically reloads the page when you save CSS files.
+</Tip>
+
+## Color Palette Reference
+
+Colors used in the default `App.css`:
+
+| Color | Hex | Usage |
+|-------|-----|-------|
+| Dark Gray | `#282c34` | Background for `.App-header` |
+| React Blue | `#61dafb` | Links and accents |
+| White | `#ffffff` | Text on dark backgrounds |
+
+<Check>
+You can customize these colors to match your brand or design preferences!
+</Check>

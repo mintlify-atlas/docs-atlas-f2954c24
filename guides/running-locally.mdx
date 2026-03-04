@@ -1,0 +1,237 @@
+---
+title: Running Locally
+description: Complete guide for setting up and running the application in your local development environment
+---
+
+This guide walks you through setting up the full-stack application on your local machine for development.
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+<Steps>
+  <Step title="Check Node.js version">
+    Verify that Node.js is installed (v14 or higher recommended):
+    
+    ```bash
+    node --version
+    ```
+    
+    If Node.js is not installed, download it from [nodejs.org](https://nodejs.org/)
+  </Step>
+  
+  <Step title="Verify npm">
+    Confirm npm is available:
+    
+    ```bash
+    npm --version
+    ```
+    
+    npm comes bundled with Node.js
+  </Step>
+</Steps>
+
+## Environment Setup
+
+<Steps>
+  <Step title="Clone and navigate to the project">
+    If you haven't already, clone the repository and navigate to the project directory:
+    
+    ```bash
+    cd workspace/source
+    ```
+  </Step>
+  
+  <Step title="Install server dependencies">
+    Navigate to the server directory and install dependencies:
+    
+    ```bash
+    cd server
+    npm install
+    ```
+    
+    This installs Express and CORS packages required for the backend.
+  </Step>
+  
+  <Step title="Install client dependencies">
+    Open a new terminal window, navigate to the client directory, and install dependencies:
+    
+    ```bash
+    cd workspace/source/client
+    npm install
+    ```
+    
+    This installs React and all required frontend dependencies.
+  </Step>
+</Steps>
+
+<Note>
+  You'll need **two terminal windows** to run both the frontend and backend simultaneously.
+</Note>
+
+## Running Both Servers
+
+<Steps>
+  <Step title="Start the backend server">
+    In your first terminal window, from the `server` directory:
+    
+    ```bash
+    cd server
+    node index.js
+    ```
+    
+    You should see:
+    ```
+    ✅ Server running on port 5000
+    ```
+    
+    The backend API is now running at `http://localhost:5000`
+  </Step>
+  
+  <Step title="Start the frontend development server">
+    In your second terminal window, from the `client` directory:
+    
+    ```bash
+    cd client
+    npm start
+    ```
+    
+    The React development server will start and automatically open your browser to `http://localhost:3000`
+  </Step>
+  
+  <Step title="Verify the connection">
+    Once both servers are running, you should see:
+    - The page displays "Frontend Connected to Backend"
+    - Below it, the message "🚀 Express backend is running!"
+    
+    This confirms the frontend is successfully communicating with the backend.
+  </Step>
+</Steps>
+
+## Accessing the Application
+
+<CardGroup cols={2}>
+  <Card title="Frontend" icon="react">
+    **URL**: http://localhost:3000
+    
+    The React development server with hot module replacement
+  </Card>
+  
+  <Card title="Backend API" icon="server">
+    **URL**: http://localhost:5000
+    
+    The Express API server
+  </Card>
+</CardGroup>
+
+## Hot Reload Capabilities
+
+### Frontend Hot Reload
+
+The React development server includes hot module replacement (HMR):
+
+- Edit any file in `client/src/`
+- Save the file
+- Browser automatically refreshes with changes
+- No need to restart the server
+
+<Tip>
+  Changes to `client/src/App.js` will be reflected immediately in your browser!
+</Tip>
+
+### Backend Development
+
+The backend server requires manual restart when you make changes:
+
+1. Stop the server with `Ctrl+C`
+2. Restart with `node index.js`
+
+<Tip>
+  For auto-restart on backend changes, install and use `nodemon`:
+  
+  ```bash
+  npm install -g nodemon
+  nodemon index.js
+  ```
+</Tip>
+
+## Common Development Workflows
+
+### Making Changes to the Frontend
+
+<Steps>
+  <Step title="Edit React components">
+    Modify files in `client/src/App.js` or other component files
+  </Step>
+  
+  <Step title="Save and preview">
+    Save the file - changes appear automatically in the browser
+  </Step>
+  
+  <Step title="Check the console">
+    Open browser DevTools (F12) to view console logs and debug
+  </Step>
+</Steps>
+
+### Making Changes to the Backend
+
+<Steps>
+  <Step title="Edit the Express server">
+    Modify `server/index.js` to add new routes or logic
+  </Step>
+  
+  <Step title="Restart the server">
+    Press `Ctrl+C` in the server terminal, then run `node index.js` again
+  </Step>
+  
+  <Step title="Test the API">
+    Refresh the frontend or use a tool like Postman to test your API changes
+  </Step>
+</Steps>
+
+### Adding New Dependencies
+
+**For the frontend:**
+```bash
+cd client
+npm install package-name
+```
+
+**For the backend:**
+```bash
+cd server
+npm install package-name
+```
+
+<Warning>
+  Remember to restart the respective server after installing new dependencies!
+</Warning>
+
+## Port Configuration
+
+| Service | Port | Configured In |
+|---------|------|---------------|
+| Frontend | 3000 | React Scripts (default) |
+| Backend | 5000 | `server/index.js:11` |
+
+<Note>
+  The backend port can be changed via the `PORT` environment variable:
+  
+  ```bash
+  PORT=8000 node index.js
+  ```
+  
+  If you change the backend port, update the fetch URL in `client/src/App.js:7`
+</Note>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Deployment" icon="rocket" href="/guides/deployment">
+    Learn how to deploy your application to production
+  </Card>
+  
+  <Card title="Troubleshooting" icon="wrench" href="/guides/troubleshooting">
+    Fix common development issues
+  </Card>
+</CardGroup>
